@@ -5,54 +5,57 @@ import pandas as pd
 load_dotenv(".env")
 
 def load_cv_page():
-    st.title('Users CVs')
-    st.subheader(f'Total CVs: {5}')
+    st.title('CV Database')
+    st.subheader(f'Total CVs in the database: {5}')
 
-    st.subheader('Users Info Table')
+    st.subheader('CV Details')
     data = [
         {
-            'id': 1,
-            'name': 'Jan Kowalski',
-            'email': 'jan@example.com',
-            'location': 'Warsaw'
+            'Id': 1,
+            'Name': 'Jan Kowalski',
+            'Email': 'jan@example.com',
+            'Location': 'Warsaw'
         },
         {
-            'id': 2,
-            'name': 'Dorota Marek',
-            'email': 'dorota@example.com',
-            'location': 'Gdańsk'
+            'Id': 2,
+            'Name': 'Dorota Marek',
+            'Email': 'dorota@example.com',
+            'Location': 'Gdańsk'
         },
     ]
     df = pd.DataFrame(data)
-    st.dataframe(df, use_container_width=True, hide_index=True)
-
+    st.dataframe(
+        df,
+        use_container_width=True,
+        hide_index=True
+    )
     st.subheader('Actions')
     uploaded_file = st.file_uploader('Select CV from your device', type=None)
-    if st.button('Add CV'):
+    if st.button('Add a new CV'):
         if uploaded_file is not None:
             st.success('Uploaded CV')
         else:
             st.warning('Select CV')
 
 def load_rfp_page():
-    st.title('Request for Proposals')
-    st.subheader(f'Total RFPs: {5}')
+    st.title('RFP Database')
+    st.subheader(f'Total RFPs in the database: {5}')
 
-    st.subheader('RFP Info Table')
+    st.subheader('RFP Details')
     data = [
         {
-            'Project title': 'Cloud Migration Project',
-            'Start Date': '',
+            'Project Title': 'Cloud Migration Project',
+            'Start Date': '2025-10-04',
             'Duration': '19 months',
             'Team Size': '12 people',
             'Budget Range': '$100K - $250K'
         },
         {
-            'Project title': 'Cloud Migration Project',
-            'Start Date': '',
-            'Duration': '19 months',
-            'Team Size': '12 people',
-            'Budget Range': '$100K - $250K'
+            'Project Title': 'Security Enhancement Development',
+            'Start Date': '2025-09-28',
+            'Duration': '20 months',
+            'Team Size': '9 people',
+            'Budget Range': '$500K - $1M'
         },
     ]
     df = pd.DataFrame(data)
@@ -60,11 +63,11 @@ def load_rfp_page():
 
     st.subheader('Actions')
     uploaded_file = st.file_uploader('Select RfP from your device', type=None)
-    if st.button('Add RfP'):
+    if st.button('Add a new RFP'):
         if uploaded_file is not None:
-            st.success('Uploaded RfP')
+            st.success('Uploaded RFP')
         else:
-            st.warning('Select RfP')
+            st.warning('Select RFP')
 
 def load_bi_page():
     st.title('BI QueryTool')
@@ -100,22 +103,26 @@ def load_bi_page():
             st.markdown(ai_reply)
 
 def load_proj_ass_page():
-    st.title('Project assignments')
-    st.subheader(f'Total Project assignments: {5}')
+    st.title('Project Assignments')
+    st.subheader(f'Total Project Assignments in the database: {5}')
 
-    st.subheader('Project assignment Info Table')
+    st.subheader('Project Assignment Details')
     data = [
         {
-            'id': 1,
-            'name': 'Jan Kowalski',
-            'email': 'jan@example.com',
-            'location': 'Warsaw'
+            'Id': 'PRJ-001',
+            'Name': 'Customer Portal for DataSystems Inc',
+            'Start Date': '2025-08-04',
+            'End Date': '',
+            'Team Size': '4',
+            'Assigned Programmers': ['Vincent Smith', 'David Ross', 'Nicholas Smith', 'Roger Porter']
         },
         {
-            'id': 2,
-            'name': 'Dorota Marek',
-            'email': 'dorota@example.com',
-            'location': 'Gdańsk'
+            'Id': 'PRJ-006',
+            'Name': 'E-commerce Platform for FinTech Innovations',
+            'Start Date': '2025-02-24',
+            'End Date': '2025-07-2',
+            'Team Size': '2',
+            'Assigned Programmers': ['Sandra Rose', 'Kenneth House']
         },
     ]
     df = pd.DataFrame(data)
@@ -123,7 +130,7 @@ def load_proj_ass_page():
 
     st.subheader('Actions')
     uploaded_file = st.file_uploader('Select Project assignment from your device', type=None)
-    if st.button('Add Project assignment'):
+    if st.button('Add a new Project Assignment'):
         if uploaded_file is not None:
             st.success('Uploaded Project assignment')
         else:
@@ -131,14 +138,14 @@ def load_proj_ass_page():
 
 if __name__ == "__main__":
     st.sidebar.title('MENU')
-    page = st.sidebar.radio('Select page:', ['CVs', 'RFPs', 'BI QueryTool', 'Project assignments'])
+    page = st.sidebar.radio('Select page:', ['CVs', 'RFPs', 'Project Assignments' , 'BI Query Tool'])
 
     match page:
         case 'CVs':
             load_cv_page()
         case 'RFPs':
             load_rfp_page()
-        case 'BI QueryTool':
-            load_bi_page()
-        case 'Project assignments':
+        case 'Project Assignments':
             load_proj_ass_page()
+        case 'BI Query Tool':
+            load_bi_page()
