@@ -1,21 +1,23 @@
-from unstructured.partition.pdf import partition_pdf
-from pathlib import Path
-from typing import List
+import os
+from pypdf import PdfReader
 
-from .config_cv import CV_DIR
-
-
-def extract_text_from_pdf(pdf_path: Path) -> str:
-    """Czyta PDF i zwraca tekst."""
-    elements = partition_pdf(filename=str(pdf_path))
-
-    text = "\n".join(
-        el.text for el in elements
-        if hasattr(el, "text") and el.text and el.text.strip()
-    )
+def extract_text_from_pdf(pdf_path):
+    """
+    Wyodrębnia tekst z pliku PDF przy użyciu biblioteki pypdf.
+    """
+    text = ""
+    try:
+        reader = PdfReader(pdf_path)
+        for page in reader.pages:
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text + "\n"
+    except Exception as e:
+        print(f"Błąd podczas odczytu pliku {pdf_path}: {e}")
     return text
 
-
-def list_cv_files() -> List[Path]:
-    """Zwraca listę PDF-ów w katalogu data/cvs."""
-    return sorted(CV_DIR.glob("*.pdf"))
+def list_cv_files(directory_path):
+    """
+    Listuje wszystkie pliki PDF w podanym katalogu.
+    """
+    return [os.path.join(directory_path, f) for f in os.listdir(directory_path) if f.endswith('.pdf')]

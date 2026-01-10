@@ -1,16 +1,23 @@
 from pathlib import Path
 from typing import List
-from unstructured.partition.pdf import partition_pdf
-
+import os
+from pypdf import PdfReader
 from .config_rfp import RFP_DIR
+
+def extract_text_from_pdf(pdf_path):
+    """
+    Wyodrębnia tekst z pliku PDF przy użyciu biblioteki pypdf.
+    """
+    text = ""
+    try:
+        reader = PdfReader(pdf_path)
+        for page in reader.pages:
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text + "\n"
+    except Exception as e:
+        print(f"Błąd podczas odczytu pliku {pdf_path}: {e}")
+    return text
 
 def list_rfp_files() -> List[Path]:
     return sorted(RFP_DIR.glob("*.pdf"))
-
-def extract_text_from_pdf(pdf_path: Path) -> str:
-    elements = partition_pdf(filename=str(pdf_path))
-    text = "\n".join(
-        el.text for el in elements
-        if hasattr(el, "text") and el.text and el.text.strip()
-    )
-    return text

@@ -31,7 +31,7 @@ def load_cv_page():
     df = pd.DataFrame(data)
     st.dataframe(
         df,
-        use_container_width=True,
+        width='stretch',
         hide_index=True
     )
     st.subheader('Actions')
@@ -49,7 +49,7 @@ def load_rfp_page():
     st.subheader('RFP Details')
     data = get_rfps()
     df = pd.DataFrame(data)
-    st.dataframe(df, use_container_width=True, hide_index=True)
+    st.dataframe(df, width='stretch', hide_index=True)
 
     st.subheader('Actions')
     uploaded_file = st.file_uploader('Select RfP from your device', type=None)
@@ -116,7 +116,7 @@ def load_proj_ass_page():
         },
     ]
     df = pd.DataFrame(data)
-    st.dataframe(df, use_container_width=True, hide_index=True)
+    st.dataframe(df, width='stretch', hide_index=True)
 
     st.subheader('Actions')
     uploaded_file = st.file_uploader('Select Project assignment from your device', type=None)
