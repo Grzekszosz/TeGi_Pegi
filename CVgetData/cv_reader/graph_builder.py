@@ -53,7 +53,23 @@ class CVGraphBuilder:
                 "SPEAKS_LANGUAGE",# Person -> Language
                 "WORKED_ON",      # Person -> Project
             ],
+            additional_instructions=(
+                "You will receive a CV that can be written in Polish or English. "
+                "Output graph data MUST be in English.\n"
+                "- Node labels and relationship types MUST be exactly one of the allowed lists.\n"
+                "- Translate Polish entity values to English (job titles, skills, education fields, project descriptions).\n"
+                "- Keep proper nouns (person/company names, product names, certificates) in original form unless there is a standard English name.\n"
+                "- Normalize synonyms to a single canonical English term (e.g., 'C# developer' vs 'Software Engineer').\n"
+                "- Do not invent facts not present in the CV."
+                "For Person nodes: extract and store these properties if present: "
+                "first_name, last_name, email, location. "
+                "If a value is missing in the CV, leave it null/empty; do NOT guess. "
+                "Do NOT use arbitrary tokens as a person's name."
+            ),
         )
+
+    def normalize_uid(self):
+        self.graph.query("MATCH (p:Person) WHERE p.uuid IS NULL SET p.uuid = randomUUID();")
 
     # opcjonalnie: wyczyść bazę przed startem
     def reset_graph(self):
@@ -95,4 +111,5 @@ class CVGraphBuilder:
         for pdf in pdf_files:
             self.process_single_cv(pdf)
 
+        self.normalize_uid()
         print("Gotowe! Sprawdź graf w Neo4j Browser 🙂")

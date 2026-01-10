@@ -3,27 +3,31 @@ from dotenv import load_dotenv
 import streamlit as st
 import pandas as pd
 
+from CVgetData.get_persons import get_persons
+from CVgetData.get_rfps import get_rfps
+
 load_dotenv(".env")
+
+#✅ RFP → Skill requirements są w grafie i są odczytywane (mandatory + all req)
+#✅ Person → Skill są w grafie i są odczytywane
+#✅ Tryb STRICT działa logicznie (brak wyników, bo nikt nie ma kompletu mandatory)
+#✅ Tryb SOFT robi ranking + explainability (matched/missing)
+#✅ Brak warningów Neo4j o brakujących property (czyli query są “czyste”)
+#Co NIE jest spełnione (to są wymogi PRD, których Twój system jeszcze nie realizuje)
+#TODO ❌ Real-time availability management (YAML/JSON, allocation %, daty, aktualizacja bez rebuild)
+#TODO ❌ Multi-factor scoring (skills + experience level + availability + wagi)
+#TODO ❌ Experience/proficiency na relacji HAS_SKILL (np. lata, poziom 1–5)
+#TODO ❌ Temporal queries typu „kto będzie dostępny po zakończeniu projektu”
+#TODO ❌ Team composition optimization / what-if
+#TODO ❌ (opcjonalnie PRD) encje/relacje typu Company/Project/Certification/University
+
 
 def load_cv_page():
     st.title('CV Database')
     st.subheader(f'Total CVs in the database: {5}')
 
     st.subheader('CV Details')
-    data = [
-        {
-            'Id': 1,
-            'Name': 'Jan Kowalski',
-            'Email': 'jan@example.com',
-            'Location': 'Warsaw'
-        },
-        {
-            'Id': 2,
-            'Name': 'Dorota Marek',
-            'Email': 'dorota@example.com',
-            'Location': 'Gdańsk'
-        },
-    ]
+    data = get_persons()
     df = pd.DataFrame(data)
     st.dataframe(
         df,
@@ -43,22 +47,7 @@ def load_rfp_page():
     st.subheader(f'Total RFPs in the database: {5}')
 
     st.subheader('RFP Details')
-    data = [
-        {
-            'Project Title': 'Cloud Migration Project',
-            'Start Date': '2025-10-04',
-            'Duration': '19 months',
-            'Team Size': '12 people',
-            'Budget Range': '$100K - $250K'
-        },
-        {
-            'Project Title': 'Security Enhancement Development',
-            'Start Date': '2025-09-28',
-            'Duration': '20 months',
-            'Team Size': '9 people',
-            'Budget Range': '$500K - $1M'
-        },
-    ]
+    data = get_rfps()
     df = pd.DataFrame(data)
     st.dataframe(df, use_container_width=True, hide_index=True)
 

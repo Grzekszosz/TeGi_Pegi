@@ -8,7 +8,7 @@ from rfp_reader.rfp_extractor import extract_rfp_json
 
 load_dotenv(override=True)
 
-def main():
+def build_rfps():
     graph = Neo4jGraph(
         url=os.getenv("NEO4J_URI"),
         username=os.getenv("NEO4J_USERNAME"),
@@ -58,4 +58,4 @@ def main():
     print("Gotowe! RFP-y zapisane do Neo4j.")
 
 if __name__ == "__main__":
-    main()
+    build_rfps()

@@ -1,6 +1,6 @@
 import os
 from dataclasses import dataclass
-
+from langchain_community.graphs import Neo4jGraph
 @dataclass
 class OpenAIConfig:
     api_key: str
@@ -24,3 +24,12 @@ def get_neo4j_config() -> Neo4jConfig:
     if not password:
         raise RuntimeError("Brak zmiennej NEO4J_PASSWORD")
     return Neo4jConfig(uri=uri, user=user, password=password)
+
+def init_neo4j() -> Neo4jGraph:
+    config = get_neo4j_config()
+    graph = Neo4jGraph(
+        url = config.uri,
+        username = config.user,
+        password = config.password,
+    )
+    return graph
