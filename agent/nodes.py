@@ -44,23 +44,17 @@ def classify_query(state: RouterState) -> Dict:
     query_type = result.content.strip().lower()
     info_msg = AIMessage(content=f"[QUERY_TYPE:{query_type}]")
 
-    return {
-        "messages": messages + [info_msg],
-        "query_type": query_type,
-    }
+    return {"messages": messages, "query_type": query_type}
+
 
 def call_tools_and_answer(state: RouterState) -> Dict:
     # bierzemy historię z routera
     history = state["messages"][:]
 
+    qt = state.get("query_type") or "unknown"
     system_msg = (
         "Jesteś asystentem TalentMatch.\n"
-        "- Masz dostęp do grafu wiedzy poprzez tool 'graph_cypher_query'.\n"
-        "- Najpierw wymyśl zapytanie Cypher potrzebne do odpowiedzi.\n"
-        "- Użyj toola, podając krótki opis i zapytanie Cypher.\n"
-        "- Po otrzymaniu wyników z toola wygeneruj zrozumiałą odpowiedź biznesową po polsku.\n"
-        "- Jeśli graf nie zawiera danych, powiedz o tym wprost."
-    )
+        f"Typ zapytania: {qt}\n")
 
     messages_for_llm = [("system", system_msg)] + history
 

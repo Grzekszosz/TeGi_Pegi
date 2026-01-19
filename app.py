@@ -5,6 +5,7 @@ import pandas as pd
 
 from CVgetData.get_persons import get_persons, count_persons
 from CVgetData.get_rfps import get_rfps
+from agent.chat import run_chat
 
 load_dotenv(".env")
 
@@ -24,7 +25,8 @@ load_dotenv(".env")
 
 def load_cv_page():
     st.title('CV Database')
-    st.subheader(f'Total CVs in the database: {count_persons()}')
+    count_person=count_persons()
+    st.subheader(f'Total CVs in the database: {count_person}')
 
     st.subheader('CV Details')
     data = get_persons()
@@ -48,6 +50,8 @@ def load_rfp_page():
 
     st.subheader('RFP Details')
     data = get_rfps()
+    print(data)
+
     df = pd.DataFrame(data)
     st.dataframe(df, width='stretch', hide_index=True)
 
@@ -60,37 +64,31 @@ def load_rfp_page():
             st.warning('Select RFP')
 
 def load_bi_page():
-    st.title('BI QueryTool')
+    st.title("TalentMatch AI")
 
-    if 'messages' not in st.session_state:
+    if "messages" not in st.session_state:
         st.session_state.messages = [
-            {
-                'role': 'ai',
-                'content': 'Hi! What you wanna know'
-            }
+            {"role": "ai", "content": "Siema. Pytaj o dostępność ludzi, skille i dopasowanie do RFP."}
         ]
 
     for msg in st.session_state.messages:
-        with st.chat_message(msg['role']):
-            st.markdown(msg['content'])
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
 
-    user_input = st.chat_input('Write message...')
+    user_input = st.chat_input("Napisz wiadomość...")
 
     if user_input:
-        st.session_state.messages.append({
-            'role': 'user',
-            'content': user_input
-        })
-        with st.chat_message('user'):
+        st.session_state.messages.append({"role": "user", "content": user_input})
+        with st.chat_message("user"):
             st.markdown(user_input)
 
-        ai_reply = 'Mock answer from ai bot'
-        st.session_state.messages.append({
-            'role': 'ai',
-            'content': ai_reply
-        })
-        with st.chat_message('ai'):
+        with st.chat_message("ai"):
+            with st.spinner("Myślę..."):
+                ai_reply = run_chat(st.session_state.messages)
+
             st.markdown(ai_reply)
+
+        st.session_state.messages.append({"role": "ai", "content": ai_reply})
 
 def load_proj_ass_page():
     st.title('Project Assignments')

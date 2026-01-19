@@ -8,11 +8,11 @@ def get_rfps():
         query = """
         MATCH (r:RFP)
         RETURN
-          r.project_title AS `Project Title`,
+          r.title AS `Project Title`,
           r.start_date    AS `Start Date`,
-          r.duration      AS `Duration`,
+          r.duration_months      AS `Duration`,
           r.team_size     AS `Team Size`,
-          r.budget_range  AS `Budget Range`,
+          r.project_type  AS `Project Type`,
           r.uuid          AS uuid
         ORDER BY `Start Date` DESC, `Project Title`
         """

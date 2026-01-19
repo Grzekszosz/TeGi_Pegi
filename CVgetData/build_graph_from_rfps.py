@@ -3,12 +3,18 @@ import os
 
 from langchain_community.graphs import Neo4jGraph
 
+from CVgetData.cv_reader.graph_builder import CVGraphBuilder
 from rfp_reader.pdf_reader import list_rfp_files, extract_text_from_pdf
 from rfp_reader.rfp_extractor import extract_rfp_json
 
 load_dotenv(override=True)
 
 def build_rfps():
+
+    #onyl this time
+    builder = CVGraphBuilder()
+    builder.reset_graph()
+
     graph = Neo4jGraph(
         url=os.getenv("NEO4J_URI"),
         username=os.getenv("NEO4J_USERNAME"),
@@ -23,12 +29,19 @@ def build_rfps():
     for f in files:
         print("Przetwarzam RFP:", f.name)
         text = extract_text_from_pdf(f)
+        text = text.replace("Request for Proposal (RFP)", "")
+
         rfp = extract_rfp_json(text)
 
-        # 1) RFP node
+        source = f.name
+        data = rfp.model_dump()
+        data["id"] = source  # klucz MERGE = unikalny per plik
+        data["source"] = source  # fajne do debugowania
+
         graph.query("""
         MERGE (r:RFP {id:$id})
-        SET r.title=$title,
+        SET r.source=$source,
+            r.title=$title,
             r.client=$client,
             r.description=$description,
             r.project_type=$project_type,
@@ -38,9 +51,8 @@ def build_rfps():
             r.start_date=$start_date,
             r.location=$location,
             r.remote_allowed=$remote_allowed
-        """, rfp.model_dump())
+        """, data)
 
-        # 2) Requirements -> Skill nodes + NEEDS rel
         for req in rfp.requirements:
             graph.query("""
             MERGE (s:Skill {name:$skill_name})
@@ -51,7 +63,7 @@ def build_rfps():
                 rel.is_mandatory=$is_mandatory,
                 rel.preferred_certifications=$preferred_certifications
             """, {
-                "rfp_id": rfp.id,
+                "rfp_id": source,  # <-- też source, nie rfp.id
                 **req.model_dump()
             })
 
