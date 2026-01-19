@@ -22,3 +22,14 @@ def get_persons():
     except Exception as exc:
         print(f"[get_persons] {type(exc).__name__}: {exc}")
         return []
+
+def count_persons():
+    try:
+        graph = init_neo4j()
+        query = """
+        MATCH (p:Person)
+        RETURN count(p)
+        """
+        return graph.query(query)
+    except Exception as exc:
+        print(f"[count_persons] {type(exc).__name__}: {exc}")

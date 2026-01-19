@@ -1,4 +1,6 @@
 import os
+
+from pathlib import Path
 from pypdf import PdfReader
 
 def extract_text_from_pdf(pdf_path):
@@ -14,10 +16,10 @@ def extract_text_from_pdf(pdf_path):
                 text += page_text + "\n"
     except Exception as e:
         print(f"Błąd podczas odczytu pliku {pdf_path}: {e}")
+    print("#######################################")
+    print(text)
     return text
 
-def list_cv_files(directory_path):
-    """
-    Listuje wszystkie pliki PDF w podanym katalogu.
-    """
-    return [os.path.join(directory_path, f) for f in os.listdir(directory_path) if f.endswith('.pdf')]
+
+def list_cv_files(directory_path: Path) -> list[Path]:
+    return list(directory_path.glob("*.pdf"))

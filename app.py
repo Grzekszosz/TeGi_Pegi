@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import streamlit as st
 import pandas as pd
 
-from CVgetData.get_persons import get_persons
+from CVgetData.get_persons import get_persons, count_persons
 from CVgetData.get_rfps import get_rfps
 
 load_dotenv(".env")
@@ -24,7 +24,7 @@ load_dotenv(".env")
 
 def load_cv_page():
     st.title('CV Database')
-    st.subheader(f'Total CVs in the database: {5}')
+    st.subheader(f'Total CVs in the database: {count_persons()}')
 
     st.subheader('CV Details')
     data = get_persons()

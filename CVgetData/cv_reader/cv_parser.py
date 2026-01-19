@@ -11,13 +11,21 @@ SKILLS = ["Python", "Java", "SQL", "Docker", "AWS", "Kubernetes"]
 def extract_skills(text: str) -> List[str]:
     found = []
     for skill in SKILLS:
-        if re.search(rf"\b{skill}\b", text, re.IGNORECASE):
+        if re.search(rf"\b{re.escape(skill)}\b", text, re.IGNORECASE):
             found.append(skill)
-    return found
+    # dedupe
+    out, seen = [], set()
+    for s in found:
+        k = s.lower()
+        if k not in seen:
+            seen.add(k)
+            out.append(s)
+    return out
 
 def parse_cv(text: str) -> Dict:
     return {
         "email": extract_email(text),
-        "skills": extract_skills(text),
+        "skills_fallback": extract_skills(text),
+        #"skills": extract_skills(text),
         # później możesz dodać: name, phone, experience itd.
     }
