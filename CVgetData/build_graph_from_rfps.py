@@ -1,13 +1,28 @@
+from pathlib import Path
+
 from dotenv import load_dotenv
 import os
 
 from langchain_community.graphs import Neo4jGraph
 
 from CVgetData.cv_reader.graph_builder import CVGraphBuilder
+from CVgetData.rfp_reader.json_reader import extract_text_from_json
+from CVgetData.rfp_reader.txt_reader import extract_text_from_txt
 from rfp_reader.pdf_reader import list_rfp_files, extract_text_from_pdf
 from rfp_reader.rfp_extractor import extract_rfp_json
 
 load_dotenv(override=True)
+
+def extract_text_auto(path: Path) -> str:
+    ext = path.suffix.lower()
+    if ext == ".pdf":
+        return extract_text_from_pdf(path)
+    if ext == ".txt":
+        return extract_text_from_txt(path)
+    if ext == ".json":
+        return extract_text_from_json(path)
+
+    raise ValueError(f"Unsupported file type: {ext}")
 
 def build_rfps():
 
@@ -28,7 +43,11 @@ def build_rfps():
 
     for f in files:
         print("Przetwarzam RFP:", f.name)
-        text = extract_text_from_pdf(f)
+        try:
+            text= extract_text_auto(f)
+        except Exception as e:
+            print(f"{type(e).__name__}: {e}")
+
         text = text.replace("Request for Proposal (RFP)", "")
 
         rfp = extract_rfp_json(text)

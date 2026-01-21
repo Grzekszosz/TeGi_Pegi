@@ -79,7 +79,8 @@ class CVGraphBuilder:
 
     def cv_text_to_document(self, pdf_path: Path) -> Document:
         """PDF -> tekst -> Document dla LLM."""
-        text = extract_text_from_pdf(pdf_path)
+        text = extract_text_auto()
+
         return Document(
             page_content=text,
             metadata={"source": pdf_path.name},
@@ -234,9 +235,19 @@ class CVGraphBuilder:
             params={"source": source},
         )
 
+    def extract_text_auto(path: Path) -> str:
+        ext = path.suffix.lower()
+        if ext == ".pdf":
+            return extract_text_from_pdf(path)
+        if ext == ".txt":
+            return extract_text_from_txt(path)
+        if ext == ".json":
+            return extract_text_from_json(path)
 
+        raise ValueError(f"Unsupported file type: {ext}")
 
     def process_single_cv(self, pdf_path: Path):
+
         print(f"Przetwarzam CV: {pdf_path.name}")
 
         # 1) PDF -> tekst

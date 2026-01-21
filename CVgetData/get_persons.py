@@ -28,8 +28,9 @@ def count_persons():
         graph = init_neo4j()
         query = """
         MATCH (p:Person)
-        RETURN count(p)
+        RETURN count(p) AS cnt
         """
-        return graph.query(query)
+        result = graph.query(query)
+        return result[0]["cnt"]
     except Exception as exc:
         print(f"[count_persons] {type(exc).__name__}: {exc}")

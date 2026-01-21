@@ -5,9 +5,6 @@ from pypdf import PdfReader
 from .config_rfp import RFP_DIR
 
 def extract_text_from_pdf(pdf_path):
-    """
-    Wyodrębnia tekst z pliku PDF przy użyciu biblioteki pypdf.
-    """
     text = ""
     try:
         reader = PdfReader(pdf_path)

@@ -1,10 +1,21 @@
 from agent.config import init_neo4j
 
 
+def count_rfps():
+    try:
+        graph = init_neo4j()
+        query = """
+        MATCH (p:RFP)
+        RETURN count(p) AS cnt
+        """
+        result = graph.query(query)
+        return result[0]["cnt"]
+    except Exception as exc:
+        print(f"[count_persons] {type(exc).__name__}: {exc}")
+
 def get_rfps():
     try:
         graph = init_neo4j()
-
         query = """
         MATCH (r:RFP)
         RETURN
@@ -16,9 +27,7 @@ def get_rfps():
           r.uuid          AS uuid
         ORDER BY `Start Date` DESC, `Project Title`
         """
-
         return graph.query(query)
-
     except Exception as exc:
         print(f"[get_rfps] {type(exc).__name__}: {exc}")
         return []

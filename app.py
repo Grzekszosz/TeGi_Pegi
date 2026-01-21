@@ -1,13 +1,28 @@
 #test
+import tempfile
+from pathlib import Path
+
 from dotenv import load_dotenv
 import streamlit as st
 import pandas as pd
 
 from CVgetData.get_persons import get_persons, count_persons
-from CVgetData.get_rfps import get_rfps
+from CVgetData.get_rfps import get_rfps, count_rfps
 from agent.chat import run_chat
 
+from CVgetData.cv_reader.graph_builder import  CVGraphBuilder
+
 load_dotenv(".env")
+
+def save_upload_to_temp(uploaded_file) -> Path:
+    suffix = Path(uploaded_file.name).suffix or ""
+    # NamedTemporaryFile na Windows: delete=False, bo inaczej plik bywa zablokowany
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
+    tmp.write(uploaded_file.getbuffer())
+    tmp.flush()
+    tmp.close()
+    return Path(tmp.name)
+
 
 #✅ RFP → Skill requirements są w grafie i są odczytywane (mandatory + all req)
 #✅ Person → Skill są w grafie i są odczytywane
@@ -23,30 +38,51 @@ load_dotenv(".env")
 #TODO ❌ (opcjonalnie PRD) encje/relacje typu Company/Project/Certification/University
 
 
-def load_cv_page():
-    st.title('CV Database')
-    count_person=count_persons()
-    st.subheader(f'Total CVs in the database: {count_person}')
 
-    st.subheader('CV Details')
+
+def load_cv_page():
+    st.title("CV Database")
+    st.subheader(f"Total CVs in the database: {count_persons()}")
+
+    st.subheader("CV Details")
     data = get_persons()
     df = pd.DataFrame(data)
-    st.dataframe(
-        df,
-        width='stretch',
-        hide_index=True
+    st.dataframe(df, width="stretch", hide_index=True)
+
+    st.subheader("Actions")
+
+    uploaded_file = st.file_uploader(
+        "Select CV from your device",
+        type=["pdf", "docx", "txt"],
+        key="cv_uploader",
     )
-    st.subheader('Actions')
-    uploaded_file = st.file_uploader('Select CV from your device', type=None)
-    if st.button('Add a new CV'):
-        if uploaded_file is not None:
-            st.success('Uploaded CV')
-        else:
-            st.warning('Select CV')
+
+    if st.button("Add a new CV", disabled=(uploaded_file is None), key="add_cv_btn"):
+        if uploaded_file is None:
+            st.warning("Select CV")
+            return
+
+        tmp_path = save_upload_to_temp(uploaded_file)
+
+        try:
+            ext = tmp_path.suffix.lower()
+            if ext != ".pdf" or ext != ".json" or ext != ".txt":
+                st.error(f"Na razie wspieram tylko PDF, json, txt. Dostałem: {ext}")
+                return
+
+            builder = CVGraphBuilder()  # możesz też wynieść wyżej
+            builder.process_single_cv(tmp_path)
+
+            st.success("CV processed and added to DB")
+        except Exception as e:
+            st.error(f"Processing failed: {type(e).__name__}: {e}")
+        finally:
+            tmp_path.unlink(missing_ok=True)
+
 
 def load_rfp_page():
     st.title('RFP Database')
-    st.subheader(f'Total RFPs in the database: {5}')
+    st.subheader(f'Total RFPs in the database: {count_rfps()}')
 
     st.subheader('RFP Details')
     data = get_rfps()
