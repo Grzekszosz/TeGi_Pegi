@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 from pypdf import PdfReader
 
+
+#To delete -> correct version in `text_extractor.py`
 def extract_text_from_pdf(pdf_path):
     """
     Wyodrębnia tekst z pliku PDF przy użyciu biblioteki pypdf.

@@ -6,29 +6,17 @@ import os
 from langchain_community.graphs import Neo4jGraph
 
 from CVgetData.cv_reader.graph_builder import CVGraphBuilder
-from CVgetData.rfp_reader.json_reader import extract_text_from_json
-from CVgetData.rfp_reader.txt_reader import extract_text_from_txt
-from rfp_reader.pdf_reader import list_rfp_files, extract_text_from_pdf
+from CVgetData.text_extractor import extract_text_auto
+from rfp_reader.pdf_reader import list_rfp_files
 from rfp_reader.rfp_extractor import extract_rfp_json
 
 load_dotenv(override=True)
-
-def extract_text_auto(path: Path) -> str:
-    ext = path.suffix.lower()
-    if ext == ".pdf":
-        return extract_text_from_pdf(path)
-    if ext == ".txt":
-        return extract_text_from_txt(path)
-    if ext == ".json":
-        return extract_text_from_json(path)
-
-    raise ValueError(f"Unsupported file type: {ext}")
 
 def build_rfps():
 
     #onyl this time
     builder = CVGraphBuilder()
-    builder.reset_graph()
+    #builder.reset_graph()
 
     graph = Neo4jGraph(
         url=os.getenv("NEO4J_URI"),

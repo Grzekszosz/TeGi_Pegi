@@ -4,6 +4,8 @@ import os
 from pypdf import PdfReader
 from .config_rfp import RFP_DIR
 
+
+#To delete -> correct version in `text_extractor.py`
 def extract_text_from_pdf(pdf_path):
     text = ""
     try:

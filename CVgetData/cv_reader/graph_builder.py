@@ -2,9 +2,8 @@
 from __future__ import annotations
 
 import os
-import pathlib
 from pathlib import Path
-from typing import List
+
 
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
@@ -13,13 +12,16 @@ from langchain_community.graphs import Neo4jGraph
 from langchain_core.documents import Document
 
 from .cv_parser import parse_cv
-from .pdf_reader import extract_text_from_pdf, list_cv_files
+from .pdf_reader import list_cv_files
+from CVgetData.text_extractor import extract_text_auto
 
 
 load_dotenv(override=True)
 
 
 class CVGraphBuilder:
+
+
     def __init__(self):
         # --- LLM ---
         self.llm = ChatOpenAI(
@@ -77,13 +79,13 @@ class CVGraphBuilder:
     def reset_graph(self):
         self.graph.query("MATCH (n) DETACH DELETE n")
 
-    def cv_text_to_document(self, pdf_path: Path) -> Document:
+    def cv_text_to_document(self, path: Path) -> Document:
         """PDF -> tekst -> Document dla LLM."""
-        text = extract_text_auto()
+        text = extract_text_auto(path)
 
         return Document(
             page_content=text,
-            metadata={"source": pdf_path.name},
+            metadata={"source": path.name},
         )
 
     def cv_to_graph_documents(self, pdf_path: Path):
@@ -235,16 +237,7 @@ class CVGraphBuilder:
             params={"source": source},
         )
 
-    def extract_text_auto(path: Path) -> str:
-        ext = path.suffix.lower()
-        if ext == ".pdf":
-            return extract_text_from_pdf(path)
-        if ext == ".txt":
-            return extract_text_from_txt(path)
-        if ext == ".json":
-            return extract_text_from_json(path)
 
-        raise ValueError(f"Unsupported file type: {ext}")
 
     def process_single_cv(self, pdf_path: Path):
 

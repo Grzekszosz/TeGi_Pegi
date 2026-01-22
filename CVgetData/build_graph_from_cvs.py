@@ -6,7 +6,7 @@ def main():
     builder = CVGraphBuilder()
 
     # jeśli chcesz za każdym razem mieć czystą bazę:
-    #builder.reset_graph()
+    builder.reset_graph()
 
     builder.process_all_cvs()
 
