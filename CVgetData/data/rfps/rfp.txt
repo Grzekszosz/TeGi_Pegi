@@ -1,0 +1,52 @@
+RFP ID: RFP-2026-API-001
+Title: API Integration Platform Development
+Client: Northbridge Logistics Sp. z o.o.
+Location: Remote / Poland
+Start Date: 2026-03-01
+Duration: 4–6 months
+Budget: 280,000–420,000 PLN (fixed price preferred)
+
+Overview:
+Northbridge Logistics is looking for a team to build an API Integration Platform that connects
+internal systems (ERP, WMS, billing) with external partners (couriers, payment provider, CRM).
+The platform must support multiple integration patterns, monitoring, retries, and auditing.
+
+Scope of Work:
+1) Design and implementation of an API Gateway + Integration Layer
+2) Support for REST and webhooks, with optional message queue integration
+3) Authentication and authorization (OAuth2/JWT)
+4) Observability: centralized logging, metrics, tracing
+5) Admin panel for managing integrations, partners, and API keys
+6) CI/CD pipeline and containerized deployment
+
+Technical Requirements:
+- Backend: .NET 8 or Java (Spring Boot) or Python (FastAPI) – justify the choice
+- Datastore: PostgreSQL preferred; optional Redis for caching
+- Messaging: RabbitMQ or Kafka (nice to have)
+- Containerization: Docker; Kubernetes is a plus
+- API documentation: OpenAPI/Swagger
+- Security: OWASP Top 10, rate limiting, audit logs
+
+Non-Functional Requirements:
+- High availability target: 99.9%
+- Latency: p95 under 250ms for gateway endpoints
+- Data retention: audit logs for 24 months
+- GDPR compliance
+
+Deliverables:
+- Architecture document and threat model
+- Source code repository + documentation
+- Automated tests (unit + integration)
+- Deployment scripts (Docker Compose minimum; Helm optional)
+- Handover and knowledge transfer session
+
+Evaluation Criteria:
+- Relevant experience with integrations and distributed systems
+- Proposed architecture and security approach
+- Team composition and availability
+- Total cost and timeline
+- References / case studies
+
+Submission:
+Send proposal by 2026-02-05 to procurement@northbridge-logistics.example
+Include: company profile, team CVs, approach, timeline, fixed price estimate.

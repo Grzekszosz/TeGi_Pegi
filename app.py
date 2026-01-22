@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import streamlit as st
 import pandas as pd
 
+from CVgetData.build_graph_from_rfps import build_rfp
 from CVgetData.get_persons import get_persons, count_persons
 from CVgetData.get_rfps import get_rfps, count_rfps
 from agent.chat import run_chat
@@ -92,12 +93,31 @@ def load_rfp_page():
     st.dataframe(df, width='stretch', hide_index=True)
 
     st.subheader('Actions')
-    uploaded_file = st.file_uploader('Select RfP from your device', type=None)
-    if st.button('Add a new RFP'):
-        if uploaded_file is not None:
-            st.success('Uploaded RFP')
-        else:
-            st.warning('Select RFP')
+    uploaded_file = st.file_uploader(
+        "Select RFP from your device",
+        type=["pdf", "json", "txt"],
+        key="rfp_uploader",
+    )
+
+    if st.button("Add a new RFP", disabled=(uploaded_file is None), key="add_rfp_btn"):
+        if uploaded_file is None:
+            st.warning("Select RFP")
+            return
+
+        tmp_path = save_upload_to_temp(uploaded_file)
+
+        try:
+            ext = tmp_path.suffix.lower()
+            if ext != ".pdf" and ext != ".json" and ext != ".txt":
+                st.error(f"Na razie wspieram tylko PDF, json, txt. Dostałem: {ext}")
+                return
+            build_rfp(tmp_path)
+
+            st.success("RFP processed and added to DB")
+        except Exception as e:
+            st.error(f"Processing failed: {type(e).__name__}: {e}")
+        finally:
+            tmp_path.unlink(missing_ok=True)
 
 def load_bi_page():
     st.title("TalentMatch AI")

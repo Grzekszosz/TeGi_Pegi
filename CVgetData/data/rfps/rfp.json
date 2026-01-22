@@ -1,0 +1,73 @@
+{
+  "rfp_id": "RFP-2026-WEB-002",
+  "title": "Enterprise Web Application Development",
+  "client": {
+    "name": "Helios Manufacturing S.A.",
+    "industry": "Manufacturing",
+    "location": "Wroclaw, Poland"
+  },
+  "project": {
+    "start_date": "2026-04-01",
+    "duration_months": "6-9",
+    "budget_pln": {
+      "min": 600000,
+      "max": 900000,
+      "pricing_model": "time_and_materials"
+    },
+    "overview": "Helios Manufacturing seeks a vendor to develop an enterprise web application for production planning, inventory visibility, and reporting. The solution must integrate with existing ERP and support role-based access control."
+  },
+  "scope": [
+    "Requirements workshops and UX/UI wireframes",
+    "Backend services and database design",
+    "Frontend web application",
+    "Integration with ERP (REST/SOAP depending on ERP capabilities)",
+    "Reporting module with exports (PDF/Excel)",
+    "Authentication and authorization (RBAC)",
+    "CI/CD setup and deployment"
+  ],
+  "technical_requirements": {
+    "frontend": ["React", "Vue", "Angular"],
+    "backend": [".NET 8", "Java Spring Boot", "Node.js"],
+    "database": ["PostgreSQL", "SQL Server"],
+    "devops": ["Docker", "CI/CD", "Infrastructure as Code (nice to have)"],
+    "testing": ["Unit tests", "Integration tests", "Automated API tests"]
+  },
+  "non_functional_requirements": {
+    "availability": "99.5%",
+    "performance": {
+      "concurrent_users": 500,
+      "p95_latency_ms": 400
+    },
+    "security": [
+      "OWASP Top 10",
+      "Audit logging",
+      "Data encryption in transit and at rest"
+    ],
+    "compliance": ["GDPR"]
+  },
+  "deliverables": [
+    "Architecture documentation",
+    "Source code repository",
+    "Test plan and automated tests",
+    "Deployment documentation",
+    "User training session"
+  ],
+  "evaluation_criteria": [
+    "Relevant enterprise project experience",
+    "Proposed architecture and stack fit",
+    "Timeline and delivery approach",
+    "Cost and team availability",
+    "References"
+  ],
+  "submission": {
+    "deadline": "2026-03-05",
+    "email": "rfp@helios-manufacturing.example",
+    "required_documents": [
+      "Company profile",
+      "Proposed solution outline",
+      "Team CVs",
+      "Budget estimate",
+      "Project plan"
+    ]
+  }
+}
