@@ -53,7 +53,7 @@ def load_cv_page():
 
     uploaded_file = st.file_uploader(
         "Select CV from your device",
-        type=["pdf", "docx", "txt"],
+        type=["pdf", "json", "txt"],
         key="cv_uploader",
     )
 
@@ -66,7 +66,7 @@ def load_cv_page():
 
         try:
             ext = tmp_path.suffix.lower()
-            if ext != ".pdf" or ext != ".json" or ext != ".txt":
+            if ext != ".pdf" and ext != ".json" and ext != ".txt":
                 st.error(f"Na razie wspieram tylko PDF, json, txt. Dostałem: {ext}")
                 return
 

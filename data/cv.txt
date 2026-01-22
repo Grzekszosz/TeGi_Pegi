@@ -1,0 +1,39 @@
+John Doe
+Senior Backend Software Engineer
+
+Location: Warsaw, Poland
+Email: john.doe@example.com
+Phone: +48 600 123 456
+
+Summary:
+Senior Backend Engineer with over 8 years of experience in designing and building
+scalable web applications and distributed systems. Strong background in Python,
+Java, and cloud-native architectures.
+
+Skills:
+- Programming Languages: Python, Java, C#, SQL
+- Frameworks: Django, FastAPI, Spring Boot, .NET Core
+- Databases: PostgreSQL, MySQL, Neo4j, Redis
+- Cloud & DevOps: Docker, Kubernetes, AWS, GitHub Actions
+- Architecture: Microservices, Event-driven systems, REST APIs
+
+Work Experience:
+
+Senior Backend Engineer – Acme Tech (2020 – Present)
+- Designed and implemented REST APIs used by over 1M users.
+- Led migration from monolithic architecture to microservices.
+- Introduced Neo4j for relationship-heavy domain modeling.
+- Mentored junior developers.
+
+Backend Developer – SoftSolutions (2016 – 2020)
+- Developed backend services in Python and Java.
+- Optimized SQL queries improving performance by 40%.
+- Worked closely with frontend and DevOps teams.
+
+Education:
+MSc in Computer Science
+Warsaw University of Technology
+
+Languages:
+- English (C1)
+- Polish (Native)

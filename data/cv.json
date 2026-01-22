@@ -1,0 +1,43 @@
+{
+  "name": "Anna Kowalska",
+  "title": "Data Scientist",
+  "location": "Krakow, Poland",
+  "contact": {
+    "email": "anna.kowalska@example.com",
+    "phone": "+48 700 987 654"
+  },
+  "summary": "Data Scientist with 6 years of experience in machine learning, data analysis, and AI-driven products. Specialized in NLP and recommendation systems.",
+  "skills": {
+    "programming_languages": ["Python", "R", "SQL"],
+    "machine_learning": ["scikit-learn", "TensorFlow", "PyTorch"],
+    "data_tools": ["Pandas", "NumPy", "Spark"],
+    "databases": ["PostgreSQL", "MongoDB"],
+    "other": ["Docker", "MLflow", "Airflow"]
+  },
+  "experience": [
+    {
+      "role": "Senior Data Scientist",
+      "company": "InsightAI",
+      "years": "2021 - Present",
+      "responsibilities": [
+        "Built NLP models for document classification and entity extraction",
+        "Designed recommendation system used by over 500k users",
+        "Collaborated with backend teams to deploy ML models"
+      ]
+    },
+    {
+      "role": "Data Scientist",
+      "company": "DataWorks",
+      "years": "2018 - 2021",
+      "responsibilities": [
+        "Developed predictive models for customer churn",
+        "Performed exploratory data analysis on large datasets"
+      ]
+    }
+  ],
+  "education": {
+    "degree": "MSc in Applied Mathematics",
+    "university": "AGH University of Science and Technology"
+  },
+  "languages": ["English", "Polish"]
+}
