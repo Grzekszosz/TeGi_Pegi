@@ -4,7 +4,7 @@ from typing import Dict
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 from .state import RouterState
-from .tools_graph import graph_cypher_query
+from .tools_graph import graph_cypher_query, tool_assign_person, tool_match_rfp, tool_list_rfps
 from .config import get_openai_config
 
 cfg = get_openai_config()
@@ -17,10 +17,12 @@ router_llm = ChatOpenAI(
 agent_llm = ChatOpenAI(
     model="gpt-4o",
     api_key=cfg.api_key,
-).bind_tools([graph_cypher_query])
+).bind_tools([tool_list_rfps, tool_match_rfp, tool_assign_person])
 
 TOOLS_BY_NAME = {
-    "graph_cypher_query": graph_cypher_query,
+        "tool_list_rfps": tool_list_rfps,
+    "tool_match_rfp": tool_match_rfp,
+    "tool_assign_person": tool_assign_person,
 }
 
 def classify_query(state: RouterState) -> Dict:

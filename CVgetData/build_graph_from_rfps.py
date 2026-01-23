@@ -16,7 +16,7 @@ def build_rfps():
 
     #onyl this time
     builder = CVGraphBuilder()
-    #builder.reset_graph()
+    builder.reset_graph()
 
     graph = Neo4jGraph(
         url=os.getenv("NEO4J_URI"),
@@ -40,6 +40,16 @@ def build_rfps():
 
         rfp = extract_rfp_json(text)
 
+        print("RFP:", f.name)
+        print("Parsed requirements:", len(rfp.requirements))
+        if rfp.requirements:
+            print("First req keys:", rfp.requirements[0].model_dump().keys())
+            print("First req:", rfp.requirements[0].model_dump())
+        else:
+            print("NO REQUIREMENTS EXTRACTED")
+
+
+
         source = f.name
         data = rfp.model_dump()
         data["id"] = source  # klucz MERGE = unikalny per plik
@@ -61,6 +71,12 @@ def build_rfps():
         """, data)
 
         for req in rfp.requirements:
+            req_data = req.model_dump()
+            skill_name = (req_data.get("skill_name") or req_data.get("name") or req_data.get("skill") or "").strip()
+            if not skill_name:
+                print(f"{source}: pomijam requirement bez nazwy skilla: {req_data}")
+                continue
+
             graph.query("""
             MERGE (s:Skill {name:$skill_name})
             WITH s
@@ -70,8 +86,11 @@ def build_rfps():
                 rel.is_mandatory=$is_mandatory,
                 rel.preferred_certifications=$preferred_certifications
             """, {
-                "rfp_id": source,  # <-- też source, nie rfp.id
-                **req.model_dump()
+                "rfp_id": source,
+                "skill_name": skill_name,
+                "min_proficiency": req_data.get("min_proficiency"),
+                "is_mandatory": bool(req_data.get("is_mandatory", False)),
+                "preferred_certifications": req_data.get("preferred_certifications"),
             })
 
     print("Gotowe! RFP-y zapisane do Neo4j.")
