@@ -16,7 +16,7 @@ def build_rfps():
 
     #onyl this time
     builder = CVGraphBuilder()
-    builder.reset_graph()
+    #builder.reset_graph()
 
     graph = Neo4jGraph(
         url=os.getenv("NEO4J_URI"),

@@ -16,6 +16,7 @@ def extract_text_auto(path: Path) -> str:
     raise ValueError(f"Unsupported file type: {ext}")
 
 def extract_text_from_txt(path: Path) -> str:
+    print (path.read_text(encoding="utf-8", errors="ignore"))
     return path.read_text(encoding="utf-8", errors="ignore")
 
 def extract_text_from_json(path: Path) -> str:

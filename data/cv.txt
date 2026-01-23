@@ -1,8 +1,8 @@
-John Doe
+Robert Lewandowski
 Senior Backend Software Engineer
 
-Location: Warsaw, Poland
-Email: john.doe@example.com
+Miejsce zamieszkania: Warsaw, Poland
+Email: robert.lewandowski@example.com
 Phone: +48 600 123 456
 
 Summary:
@@ -16,6 +16,7 @@ Skills:
 - Databases: PostgreSQL, MySQL, Neo4j, Redis
 - Cloud & DevOps: Docker, Kubernetes, AWS, GitHub Actions
 - Architecture: Microservices, Event-driven systems, REST APIs
+
 
 Work Experience:
 

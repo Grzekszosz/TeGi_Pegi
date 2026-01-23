@@ -4,7 +4,7 @@ from langchain_core.tools import tool
 
 from CVgetData.tools.assignment import assign_person_to_rfp
 from CVgetData.tools.matching import list_rfps_with_skills, match_rfp
-from CVgetData.tools.persons import list_persons, get_person
+from CVgetData.tools.persons import list_persons, get_person_graph, search_persons
 from .config import get_neo4j_config, init_neo4j
 
 _neo4j_cfg = get_neo4j_config()
@@ -53,7 +53,13 @@ def tool_list_persons(limit: int = 50) -> str:
     return str(list_persons(g, limit))
 
 @tool
-def tool_get_person(uuid: str) -> str:
+def tool_get_person_graph(uuid: str) -> str:
     """Get details of a person by uuid (name, email, skills)."""
     g = init_neo4j()
-    return str(get_person(g, uuid))
+    return str(get_person_graph(g, uuid))
+
+@tool
+def tool_search_person(fullname:str) ->str:
+    """Search person by fullname."""
+    g = init_neo4j()
+    return str(search_persons(g, fullname))

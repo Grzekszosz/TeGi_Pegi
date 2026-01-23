@@ -265,6 +265,7 @@ class CVGraphBuilder:
         self.normalize_person_name(source)
 
         self.cleanup_person_ids(source)
+        self.normalize_uid()
 
         skills_graph = self.get_person_skills_from_graph(source)
 
@@ -274,6 +275,7 @@ class CVGraphBuilder:
 
         # 5b) na koniec: zsynchronizuj property p.skills z relacji HAS_SKILL
         self.sync_person_skills_property_from_graph(source)
+
 
 
     def process_all_cvs(self):
@@ -291,5 +293,5 @@ class CVGraphBuilder:
         for pdf in pdf_files:
             self.process_single_cv(pdf)
 
-        self.normalize_uid()
+
         print("Gotowe! Sprawdź graf w Neo4j Browser 🙂")
