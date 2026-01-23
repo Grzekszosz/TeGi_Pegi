@@ -1,7 +1,7 @@
 from langchain_neo4j import Neo4jGraph
 
 ASSIGN_QUERY = """
-MATCH (p:Person {id:$person_id})
+MATCH (p:Person {uuid:$person_uuid})
 MATCH (r:RFP {id:$rfp_id})
 MERGE (p)-[a:ASSIGNED_TO]->(r)
 SET a.role = $role,
@@ -10,7 +10,8 @@ SET a.role = $role,
     a.endDate   = date($end_date),
     a.updatedAt = datetime()
 RETURN
-  coalesce(p.name, p.id) AS person,
+  coalesce(p.full_name, p.uuid) AS person,
+  p.uuid AS person_uuid,
   coalesce(r.title, r.id) AS rfp,
   a.role AS role,
   a.allocation AS allocation,
