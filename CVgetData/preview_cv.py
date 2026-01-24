@@ -12,8 +12,7 @@ def main():
         print("=" * 80)
 
         text = extract_text_from_pdf(pdf_path)
-
-        print(text[:1200])   # pokazujemy pierwsze 1200 znaków
+        print(text[:1200])
         print("\n\n")
 
 if __name__ == "__main__":

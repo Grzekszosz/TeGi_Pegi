@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import List, Optional
 from pydantic import BaseModel, Field
-
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 

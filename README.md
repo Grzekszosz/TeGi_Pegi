@@ -1,1 +1,0 @@
-# TeGi_Pegi

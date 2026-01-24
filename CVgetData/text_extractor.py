@@ -1,8 +1,6 @@
 import json
 from pathlib import Path
-
 from pypdf import PdfReader
-
 
 def extract_text_auto(path: Path) -> str:
     ext = path.suffix.lower()
@@ -21,7 +19,6 @@ def extract_text_from_txt(path: Path) -> str:
 
 def extract_text_from_json(path: Path) -> str:
     data = json.loads(path.read_text(encoding="utf-8", errors="ignore"))
-
     if isinstance(data, dict):
         parts = []
         for k, v in data.items():
@@ -30,7 +27,6 @@ def extract_text_from_json(path: Path) -> str:
             elif isinstance(v, list):
                 parts.append(f"{k}: " + ", ".join(map(str, v)))
         return "\n".join(parts)
-
     return json.dumps(data, ensure_ascii=False, indent=2)
 
 def extract_text_from_pdf(pdf_path):

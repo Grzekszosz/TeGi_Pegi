@@ -13,7 +13,6 @@ def extract_skills(text: str) -> List[str]:
     for skill in SKILLS:
         if re.search(rf"\b{re.escape(skill)}\b", text, re.IGNORECASE):
             found.append(skill)
-    # dedupe
     out, seen = [], set()
     for s in found:
         k = s.lower()
@@ -26,6 +25,4 @@ def parse_cv(text: str) -> Dict:
     return {
         "email": extract_email(text),
         "skills_fallback": extract_skills(text),
-        #"skills": extract_skills(text),
-        # później możesz dodać: name, phone, experience itd.
     }

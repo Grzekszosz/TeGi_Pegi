@@ -1,6 +1,5 @@
 from agent.config import init_neo4j
 
-
 def count_rfps():
     try:
         graph = init_neo4j()

@@ -2,7 +2,6 @@ from dotenv import load_dotenv
 import os
 import sys
 from langchain_community.graphs import Neo4jGraph
-
 from CVgetData.build_graph_from_rfps import build_rfps
 from CVgetData.cv_reader.graph_builder import CVGraphBuilder
 

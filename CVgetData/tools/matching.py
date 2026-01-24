@@ -50,7 +50,7 @@ WITH p, allRequiredSkills, personSkills,
 
 RETURN
   coalesce(p.uuid, p.person_uuid, p.uuid) AS person_uuid,
-  coalesce(p.name, p.full_name, p.uuid, p.person_uuid, p.uuid, '(no-person-name)') AS canduuidate,
+  coalesce(p.name, p.full_name, p.uuid, p.person_uuid, p.uuid, '(no-person-name)') AS candidate,
   size(matchedSkills) AS matchedCount,
   totalRequired,
   CASE
@@ -65,13 +65,17 @@ LIMIT 20;
 SOFT_MATCH_QUERY   = """
 MATCH (r:RFP {id:$rfp_id})-[:NEEDS]->(s:Skill)
 WITH
-  [x IN collect(toLower(coalesce(s.name, s.title, s.id)))
-   WHERE x IS NOT NULL] AS allRequiredSkills
+  [x IN collect(
+      toLower(replace(replace(trim(coalesce(s.name, s.title, s.id)), " ", ""), "-", ""))
+   )
+   WHERE x IS NOT NULL AND x <> ""] AS allRequiredSkills
 
 MATCH (p:Person)-[:HAS_SKILL]->(ps:Skill)
 WITH p, allRequiredSkills,
-     [x IN collect(toLower(coalesce(ps.name, ps.title, ps.id)))
-      WHERE x IS NOT NULL] AS personSkills
+     [x IN collect(
+         toLower(replace(replace(trim(coalesce(ps.name, ps.title, ps.id)), " ", ""), "-", ""))
+      )
+      WHERE x IS NOT NULL AND x <> ""] AS personSkills
 
 WITH p, allRequiredSkills, personSkills,
      [x IN allRequiredSkills WHERE x IN personSkills] AS matchedSkills,
@@ -79,8 +83,8 @@ WITH p, allRequiredSkills, personSkills,
      size(allRequiredSkills) AS totalRequired
 
 RETURN
-  coalesce(p.uuid, p.person_uuid, p.uuid) AS person_uuid,
-  coalesce(p.name, p.full_name, p.uuid, p.person_uuid, p.uuid, '(no-person-name)') AS canduuidate,
+  p.uuid AS person_uuid,
+  coalesce(p.full_name, trim(coalesce(p.first_name,'') + ' ' + coalesce(p.last_name,'')), p.uuid) AS candidate,
   size(matchedSkills) AS matchedCount,
   totalRequired,
   CASE
@@ -90,8 +94,7 @@ RETURN
   matchedSkills,
   missingSkills
 ORDER BY match_percent DESC, matchedCount DESC
-LIMIT 20;
-"""
+LIMIT 5;"""
 
 def list_rfps(graph: Neo4jGraph):
     return graph.query(LIST_RFPS)

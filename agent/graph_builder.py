@@ -1,24 +1,19 @@
 from langgraph.graph import StateGraph, START, END
 from langchain_core.messages import HumanMessage
-
 from .config import init_neo4j
 from .state import RouterState
 from .nodes import classify_query, call_tools_and_answer
 from langchain_core.tools import tool
-
 from CVgetData.tools.matching import list_rfps, match_rfp
 from CVgetData.tools.assignment import assign_person_to_rfp
 
 def build_graph():
     workflow = StateGraph(RouterState)
-
     workflow.add_node("router", classify_query)
     workflow.add_node("agent", call_tools_and_answer)
-
     workflow.add_edge(START, "router")
     workflow.add_edge("router", "agent")
     workflow.add_edge("agent", END)
-
     graph = workflow.compile()
     return graph
 
@@ -30,8 +25,6 @@ def run_business_query(user_text: str) -> str:
     }
     final_state = graph.invoke(initial_state)
     return final_state["messages"][-1].content
-
-
 
 @tool
 def tool_list_rfps() -> str:

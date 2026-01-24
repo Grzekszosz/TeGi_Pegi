@@ -1,41 +1,28 @@
-# cv_reader/graph_builder.py
 from __future__ import annotations
-
 import os
 from pathlib import Path
-
-
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_community.graphs import Neo4jGraph
 from langchain_core.documents import Document
-
 from .cv_parser import parse_cv
 from .pdf_reader import list_cv_files
 from CVgetData.text_extractor import extract_text_auto
 
-
 load_dotenv(override=True)
 
-
 class CVGraphBuilder:
-
-
     def __init__(self):
-        # --- LLM ---
         self.llm = ChatOpenAI(
             model="gpt-4o-mini",
             temperature=0,
         )
-
-        # --- Neo4j ---
         self.graph = Neo4jGraph(
             url=os.getenv("NEO4J_URI"),
             username=os.getenv("NEO4J_USERNAME"),
             password=os.getenv("NEO4J_PASSWORD"),
         )
-        # --- Transformer: tekst -> graf ---
         self.transformer = LLMGraphTransformer(
             llm=self.llm,
             allowed_nodes=[
@@ -49,13 +36,13 @@ class CVGraphBuilder:
                 "Project",
             ],
             allowed_relationships=[
-                "WORKED_AT",      # Person -> Company
-                "HAS_SKILL",      # Person -> Skill
-                "HAS_TITLE",      # Person -> JobTitle
-                "LIVES_IN",       # Person -> Location
-                "STUDIED_AT",     # Person -> Education
-                "SPEAKS_LANGUAGE",# Person -> Language
-                "WORKED_ON",      # Person -> Project
+                "WORKED_AT",
+                "HAS_SKILL",
+                "HAS_TITLE",
+                "LIVES_IN",
+                "STUDIED_AT",
+                "SPEAKS_LANGUAGE",
+                "WORKED_ON",
             ],
             additional_instructions=(
                 "You will receive a CV that can be written in Polish or English. "
@@ -74,8 +61,6 @@ class CVGraphBuilder:
 
     def normalize_uid(self):
         self.graph.query("MATCH (p:Person) WHERE p.uuid IS NULL SET p.uuid = randomUUID();")
-
-    # opcjonalnie: wyczyść bazę przed startem
     def reset_graph(self):
         self.graph.query("MATCH (n) DETACH DELETE n")
 
@@ -96,7 +81,6 @@ class CVGraphBuilder:
 
     def store_graph_documents(self, graph_docs):
         """Zapisz graph_documents do Neo4j."""
-        # Twoja wersja Neo4jGraph nie przyjmuje już base_entity_label / include_source
         self.graph.add_graph_documents(graph_docs)
 
     def upsert_cv_anchor(self, source: str):
@@ -129,9 +113,7 @@ class CVGraphBuilder:
 
 
     def update_person_skills(self, source: str, skills_graph: list[str], skills_fallback: list[str]):
-        # wybierz preferowane: graf > fallback
         final_skills = skills_graph if skills_graph else skills_fallback
-
         self.graph.query(
             """
             MATCH (p:Person)-[:FROM_CV]->(cv:CV {source: $source})
@@ -140,13 +122,10 @@ class CVGraphBuilder:
             params={"source": source, "skills": final_skills},
         )
 
-
-
     def update_person_core_from_parsed(self, source: str, parsed: dict):
         """
         Dopisuje pola do Person powiązanego z CV.
         """
-
         self.graph.query(
             """
             MATCH (p:Person)-[:FROM_CV]->(cv:CV {source: $source})
@@ -213,7 +192,6 @@ class CVGraphBuilder:
     def ensure_skill_relationships(self, source: str, skills: list[str]):
         if not skills:
             return
-
         self.graph.query(
             """
             MATCH (p:Person)-[:FROM_CV]->(cv:CV {source: $source})
@@ -237,61 +215,34 @@ class CVGraphBuilder:
             params={"source": source},
         )
 
-
-
     def process_single_cv(self, pdf_path: Path):
-
         print(f"Przetwarzam CV: {pdf_path.name}")
-
-        # 1) PDF -> tekst
         doc = self.cv_text_to_document(pdf_path)
         text = doc.page_content
         source = pdf_path.name
-
-        # 2) Kotwica CV
         self.upsert_cv_anchor(source)
-
-        # 3) Transformer -> graf
         graph_docs = self.transformer.convert_to_graph_documents([doc])
         self.store_graph_documents(graph_docs)
-
-        # 4) Połącz Person z CV (MVP)
         self.link_person_to_cv(source)
-
-        # 5) Deterministyczne pola
         parsed = parse_cv(text)
         self.update_person_core_from_parsed(source, parsed)
-
         self.normalize_person_name(source)
-
         self.cleanup_person_ids(source)
         self.normalize_uid()
-
         skills_graph = self.get_person_skills_from_graph(source)
-
         if not skills_graph:
-            # 5a) jeśli transformer nie dopiął HAS_SKILL, dopnij z fallbacku
             self.ensure_skill_relationships(source, parsed.get("skills_fallback", []))
 
-        # 5b) na koniec: zsynchronizuj property p.skills z relacji HAS_SKILL
         self.sync_person_skills_property_from_graph(source)
-
-
 
     def process_all_cvs(self):
         """Przetwórz wszystkie PDF-y z data/cvs."""
-
         pdf_files = list_cv_files(Path(__file__).resolve().parent.parent / "data/cvs")
-
         for f in pdf_files:
             print(f)
-
         if not pdf_files:
             print("Brak plików CV w data/cvs/")
             return
-
         for pdf in pdf_files:
             self.process_single_cv(pdf)
-
-
-        print("Gotowe! Sprawdź graf w Neo4j Browser 🙂")
+        print("Gotowe! Sprawdź graf w Neo4j")

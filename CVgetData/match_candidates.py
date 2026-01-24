@@ -3,12 +3,9 @@ from dotenv import load_dotenv
 import os
 from langchain_neo4j import Neo4jGraph
 
-
+#CORRUPTED
 load_dotenv(override=True)
 
-# =========================
-# BASIC LISTING & DEBUG
-# =========================
 
 LIST_RFPS = """
 MATCH (r:RFP)
@@ -45,9 +42,6 @@ RETURN person_name, collect(DISTINCT skill_name) AS skills
 ORDER BY person_name;
 """
 
-# =========================
-# RFP SKILLS (CLEAN)
-# =========================
 
 RFP_SKILLS_DEBUG = """
 MATCH (r:RFP {id:$rfp_id})-[n:NEEDS]->(s:Skill)
@@ -59,9 +53,6 @@ WITH
 RETURN mandatorySkills, allRequiredSkills;
 """
 
-# =========================
-# STRICT MATCH (MANDATORY)
-# =========================
 
 STRICT_MATCH_QUERY = """
 MATCH (r:RFP {id:$rfp_id})-[n:NEEDS]->(s:Skill)
@@ -97,9 +88,6 @@ ORDER BY match_percent DESC, matchedCount DESC
 LIMIT 20;
 """
 
-# =========================
-# SOFT MATCH (RANKING)
-# =========================
 
 SOFT_MATCH_QUERY = """
 MATCH (r:RFP {id:$rfp_id})-[:NEEDS]->(s:Skill)
@@ -131,9 +119,6 @@ ORDER BY match_percent DESC, matchedCount DESC
 LIMIT 20;
 """
 
-# =========================
-# MAIN
-# =========================
 
 def main():
     graph = Neo4jGraph(

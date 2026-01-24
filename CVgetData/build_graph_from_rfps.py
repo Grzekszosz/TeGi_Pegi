@@ -1,10 +1,7 @@
 from pathlib import Path
-
 from dotenv import load_dotenv
 import os
-
 from langchain_community.graphs import Neo4jGraph
-
 from CVgetData.cv_reader.graph_builder import CVGraphBuilder
 from CVgetData.text_extractor import extract_text_auto
 from CVgetData.rfp_reader.pdf_reader import list_rfp_files
@@ -16,8 +13,7 @@ def build_rfps():
 
     #onyl this time
     builder = CVGraphBuilder()
-    #builder.reset_graph()
-
+    builder.reset_graph()
     graph = Neo4jGraph(
         url=os.getenv("NEO4J_URI"),
         username=os.getenv("NEO4J_USERNAME"),
@@ -37,9 +33,7 @@ def build_rfps():
             print(f"{type(e).__name__}: {e}")
 
         text = text.replace("Request for Proposal (RFP)", "")
-
         rfp = extract_rfp_json(text)
-
         print("RFP:", f.name)
         print("Parsed requirements:", len(rfp.requirements))
         if rfp.requirements:
@@ -48,12 +42,10 @@ def build_rfps():
         else:
             print("NO REQUIREMENTS EXTRACTED")
 
-
-
         source = f.name
         data = rfp.model_dump()
-        data["id"] = source  # klucz MERGE = unikalny per plik
-        data["source"] = source  # fajne do debugowania
+        data["id"] = source
+        data["source"] = source
 
         graph.query("""
         MERGE (r:RFP {id:$id})
@@ -112,8 +104,8 @@ def build_rfp(path: Path):
 
     source = path.name
     data = rfp.model_dump()
-    data["id"] = source  # klucz MERGE = unikalny per plik
-    data["source"] = source  # fajne do debugowania
+    data["id"] = source
+    data["source"] = source
 
     graph.query("""
     MERGE (r:RFP {id:$id})
@@ -140,10 +132,8 @@ def build_rfp(path: Path):
             rel.is_mandatory=$is_mandatory,
             rel.preferred_certifications=$preferred_certifications
         """, {
-            "rfp_id": source,  # <-- też source, nie rfp.id
+            "rfp_id": source,
             **req.model_dump()
         })
-
-
 if __name__ == "__main__":
     build_rfps()

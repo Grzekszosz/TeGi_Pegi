@@ -1,10 +1,8 @@
 from dotenv import load_dotenv
 import os
-
 from langchain_community.graphs import Neo4jGraph
 from langchain_openai import ChatOpenAI
 from langchain_community.chains.graph_qa.cypher import GraphCypherQAChain
-
 
 def main():
     load_dotenv()
@@ -35,7 +33,7 @@ def main():
             break
 
         answer = chain.run(question)
-        print("\n💡 Odpowiedź:\n", answer)
+        print("\n Odpowiedź:\n", answer)
 
 
 if __name__ == "__main__":

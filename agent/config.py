@@ -1,7 +1,6 @@
 import os
 from dataclasses import dataclass
 from langchain_community.graphs import Neo4jGraph
-
 from dotenv import load_dotenv
 load_dotenv()
 
